@@ -211,7 +211,7 @@
                         document.getElementById('disp-ldr').innerText = data.tekanan; // Sesuaikan key jika LDR memakai field 'tekanan'
                         document.getElementById('disp-status').innerText = data.kondisi;
                         
-                        myChart.data.datasets[0].data.push(data.tegangan);
+                        myChart.data.datasets[0].data.push(data.energi);
                         myChart.data.datasets[0].data.shift();
                         myChart.update('none');
                     }
