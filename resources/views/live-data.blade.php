@@ -204,16 +204,24 @@ function updateLiveLogs() {
                 // arus, battery, kondisi, ldr, piezo, tegangan
                 // ==========================================
 
-                // Tegangan
+                // Tegangan dari Firebase
                 const tegangan = parseFloat(data.tegangan || 0);
 
                 // LDR
                 // Prioritas field 'tekanan', jika tidak ada gunakan 'ldr'
                 const ldr = parseInt(data.tekanan ?? data.ldr ?? 0);
 
-                // Battery / Energi
-                // Gunakan field 'battery' dari Firebase
+                // Energi untuk tabel Monitoring Data
+                // Menggunakan field 'battery' dari Firebase
+                // Contoh: battery = 69
                 const energi = parseFloat(data.battery || 0);
+
+                // Persentase baterai (0 - 100)
+                // Gunakan langsung nilai battery, jangan dihitung dari tegangan
+                const batteryPersen = Math.min(
+                    100,
+                    Math.max(0, parseFloat(data.battery || 0))
+                ).toFixed(0);
 
                 // Status kondisi (Terang / Gelap)
                 const kondisi = data.kondisi || '-';
@@ -237,16 +245,6 @@ function updateLiveLogs() {
                 `;
 
                 // ==========================================
-                // HITUNG PERSENTASE BATERAI
-                // Nilai battery di Firebase diasumsikan 0-100
-                // ==========================================
-
-                const batteryPersen = Math.min(
-                    100,
-                    Math.max(0, energi)
-                ).toFixed(0);
-
-                // ==========================================
                 // TENTUKAN STATUS BATERAI
                 // ==========================================
 
@@ -260,13 +258,16 @@ function updateLiveLogs() {
                     batteryStatus = 'FULL';
                 }
 
-                // Jika kondisi gelap, bisa ditampilkan sebagai ACTIVE
                 if (kondisi === 'Gelap' && Number(batteryPersen) > 0) {
                     batteryStatus = 'ACTIVE';
                 }
 
                 // ==========================================
                 // UPDATE TABEL BATERAI
+                // ==========================================
+                // CAPACITY  = battery dari Firebase (misal 69%)
+                // INBOUND   = tegangan dari Firebase (misal 8.336 V)
+                // Jadi nilai keduanya memang berbeda.
                 // ==========================================
 
                 document.getElementById("batteryTable").innerHTML = `
