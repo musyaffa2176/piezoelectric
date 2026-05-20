@@ -190,11 +190,11 @@
 </div>
 
 <script>
-    function updateLiveLogs() {
+function updateLiveLogs() {
     fetch('/api/latest-sensor')
         .then(response => response.json())
         .then(data => {
-            console.log('Data Firebase:', data); // Debug
+            console.log('Data Firebase:', data); // Debug di Console Browser
 
             if (data && !data.error) {
 
@@ -204,18 +204,18 @@
                 // arus, battery, kondisi, ldr, piezo, tegangan
                 // ==========================================
 
+                // Tegangan
                 const tegangan = parseFloat(data.tegangan || 0);
 
-                // LDR disamakan dengan kode dashboard:
-                // jika field 'tekanan' ada gunakan itu,
-                // jika tidak ada gunakan field 'ldr'
+                // LDR
+                // Prioritas field 'tekanan', jika tidak ada gunakan 'ldr'
                 const ldr = parseInt(data.tekanan ?? data.ldr ?? 0);
 
-                // Energi disamakan dengan dashboard:
-                // prioritas data.energi, jika tidak ada gunakan data.battery
-                const energi = parseFloat(data.energi ?? data.battery ?? 0);
+                // Battery / Energi
+                // Gunakan field 'battery' dari Firebase
+                const energi = parseFloat(data.battery || 0);
 
-                // Status
+                // Status kondisi (Terang / Gelap)
                 const kondisi = data.kondisi || '-';
 
                 // ==========================================
@@ -230,15 +230,15 @@
                     <tr>
                         <td style="opacity: 0.5">#${deviceId}</td>
                         <td style="font-weight: 800">${tegangan.toFixed(3)} V</td>
-                        <td>${ldr}</td>
+                        <td>${ldr} Light</td>
                         <td style="font-weight: 800">${energi.toFixed(0)} W</td>
                         <td style="opacity: 0.7; font-size: 0.7rem;">${time}</td>
                     </tr>
                 `;
 
                 // ==========================================
-                // UPDATE TABEL BATERAI
-                // Gunakan nilai energi/battery langsung dari Firebase
+                // HITUNG PERSENTASE BATERAI
+                // Nilai battery di Firebase diasumsikan 0-100
                 // ==========================================
 
                 const batteryPersen = Math.min(
@@ -246,15 +246,28 @@
                     Math.max(0, energi)
                 ).toFixed(0);
 
+                // ==========================================
+                // TENTUKAN STATUS BATERAI
+                // ==========================================
+
                 let batteryStatus = 'STANDBY';
 
-                if (energi > 0) {
+                if (Number(batteryPersen) > 0) {
                     batteryStatus = 'CHARGING';
                 }
 
                 if (Number(batteryPersen) >= 100) {
                     batteryStatus = 'FULL';
                 }
+
+                // Jika kondisi gelap, bisa ditampilkan sebagai ACTIVE
+                if (kondisi === 'Gelap' && Number(batteryPersen) > 0) {
+                    batteryStatus = 'ACTIVE';
+                }
+
+                // ==========================================
+                // UPDATE TABEL BATERAI
+                // ==========================================
 
                 document.getElementById("batteryTable").innerHTML = `
                     <tr>
@@ -282,6 +295,8 @@
 
 // Jalankan setiap 2 detik
 setInterval(updateLiveLogs, 2000);
+
+// Jalankan saat halaman pertama kali dibuka
 updateLiveLogs();
 </script>
 @endsection
