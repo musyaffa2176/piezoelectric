@@ -230,7 +230,7 @@
                     <tr>
                         <td style="opacity: 0.5">#${deviceId}</td>
                         <td style="font-weight: 800">${tegangan.toFixed(3)} V</td>
-                        <td>${ldr} Light</td>
+                        <td>${ldr}</td>
                         <td style="font-weight: 800">${energi.toFixed(0)} W</td>
                         <td style="opacity: 0.7; font-size: 0.7rem;">${time}</td>
                     </tr>
