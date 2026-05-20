@@ -202,22 +202,52 @@
         });
 
         // Loop penarikan data
-        setInterval(() => {
-            fetch('/api/latest-sensor')
-                .then(response => response.json())
-                .then(data => {
-                    if (data && !data.error) {
-                        document.getElementById('disp-energy').innerText = data.energi;
-                        document.getElementById('disp-ldr').innerText = data.tekanan; // Sesuaikan key jika LDR memakai field 'tekanan'
-                        document.getElementById('disp-status').innerText = data.kondisi;
-                        
-                        myChart.data.datasets[0].data.push(data.tegangan);
-                        myChart.data.datasets[0].data.shift();
-                        myChart.update('none');
-                    }
-                })
-                .catch(error => console.error('Gagal:', error));
-        }, 2000);
+setInterval(() => {
+    fetch('/api/latest-sensor')
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+
+                // ==============================
+                // TAMPILKAN DATA KE CARD
+                // ==============================
+
+                // Total Energi
+                document.getElementById('disp-energy').innerText =
+                    parseFloat(data.energi ?? data.battery ?? 0).toFixed(2);
+
+                // LDR (bukan tekanan)
+                document.getElementById('disp-ldr').innerText =
+                    data.ldr ?? 0;
+
+                // Status
+                document.getElementById('disp-status').innerText =
+                    data.kondisi ?? '-';
+
+
+                // ==============================
+                // UPDATE GRAFIK
+                // GRAFIK MENGGUNAKAN DATA ENERGI
+                // ==============================
+
+                const energi = parseFloat(data.energi ?? data.battery ?? 0);
+
+                // Tambahkan data energi ke grafik
+                myChart.data.datasets[0].data.push(energi);
+
+                // Hapus data paling lama agar tetap 20 titik
+                myChart.data.datasets[0].data.shift();
+
+                // Update skala Y otomatis
+                const maxValue = Math.max(...myChart.data.datasets[0].data, 10);
+                myChart.options.scales.y.max = maxValue * 1.2;
+
+                // Refresh chart tanpa animasi
+                myChart.update('none');
+            }
+        })
+        .catch(error => console.error('Gagal:', error));
+}, 2000);
     });
 </script>
 @endsection
