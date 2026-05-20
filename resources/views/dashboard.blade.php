@@ -202,69 +202,22 @@
         });
 
         // Loop penarikan data
-setInterval(() => {
-    fetch('/api/latest-sensor')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Data API:', data); // Debug: cek data yang diterima
-
-            if (data && !data.error) {
-
-                // ==========================================
-                // AMBIL DATA DARI FIREBASE
-                // Firebase kamu menggunakan field:
-                // arus, battery, kondisi, ldr, piezo, tegangan
-                // ==========================================
-
-                // Total Energi (menggunakan field battery)
-                const energi = parseFloat(data.battery || 0);
-
-                // LDR
-                const ldr = parseInt(data.ldr || 0);
-
-                // Status
-                const kondisi = data.kondisi || '-';
-
-                // Tegangan (jika ingin dipakai untuk debugging)
-                const tegangan = parseFloat(data.tegangan || 0);
-
-                // ==========================================
-                // UPDATE CARD
-                // ==========================================
-
-                document.getElementById('disp-energy').innerText =
-                    energi.toFixed(2);
-
-                document.getElementById('disp-ldr').innerText =
-                    ldr;
-
-                document.getElementById('disp-status').innerText =
-                    kondisi;
-
-                // ==========================================
-                // UPDATE GRAFIK
-                // Grafik menggunakan nilai energi (battery)
-                // ==========================================
-
-                myChart.data.datasets[0].data.push(energi);
-                myChart.data.datasets[0].data.shift();
-
-                // Skala otomatis menyesuaikan data
-                const maxValue = Math.max(
-                    ...myChart.data.datasets[0].data,
-                    10
-                );
-
-                myChart.options.scales.y.max = maxValue * 1.2;
-
-                // Update chart tanpa animasi
-                myChart.update('none');
-            }
-        })
-        .catch(error => {
-            console.error('Gagal mengambil data:', error);
-        });
-}, 2000);
+        setInterval(() => {
+            fetch('/api/latest-sensor')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        document.getElementById('disp-energy').innerText = data.energi;
+                        document.getElementById('disp-ldr').innerText = data.tekanan; // Sesuaikan key jika LDR memakai field 'tekanan'
+                        document.getElementById('disp-status').innerText = data.kondisi;
+                        
+                        myChart.data.datasets[0].data.push(data.tegangan);
+                        myChart.data.datasets[0].data.shift();
+                        myChart.update('none');
+                    }
+                })
+                .catch(error => console.error('Gagal:', error));
+        }, 2000);
     });
 </script>
 @endsection
