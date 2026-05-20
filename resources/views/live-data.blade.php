@@ -67,7 +67,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Tegangan (V)</th>
-                        <th>Tekanan</th>
+                        <th>LDR</th>
                         <th>Energi (W)</th>
                         <th>Waktu</th>
                     </tr>
@@ -202,7 +202,7 @@
                     let row = `<tr>
                         <td style="opacity: 0.5">#${data.id}</td>
                         <td style="font-weight: 800">${data.tegangan} V</td>
-                        <td>${data.LDR} psi</td>
+                        <td>${data.LDR} Light</td>
                         <td style="font-weight: 800">${data.energi} W</td>
                         <td style="opacity: 0.7; font-size: 0.7rem;">${time}</td>
                     </tr>`;
