@@ -9,7 +9,6 @@
     body {
         margin: 0;
         padding: 0;
-        /* Background cerah sesuai permintaan sebelumnya */
         background: linear-gradient(135deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
         background-attachment: fixed;
         min-height: 100vh;
@@ -27,47 +26,97 @@
     }
 
     /* ===================================================
-       STYLING KARTU & KONTEN (TETAP SAMA)
+       STYLING KARTU (MENGIKUTI FOTO 1)
        =================================================== */
     .card {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(15px) saturate(150%);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 40px; /* Lebih membulat sesuai foto 1 */
         padding: 30px;
         margin-bottom: 24px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        text-align: center;
     }
 
-    .card:hover {
-        background: rgba(255, 255, 255, 0.25);
-        transform: translateY(-5px);
+    /* Judul kecil di atas card */
+    h6 { 
+        color: rgba(255, 255, 255, 0.9) !important; 
+        text-transform: uppercase; 
+        letter-spacing: 2px; 
+        font-weight: 700; 
+        font-size: 0.8rem; 
+        margin-bottom: 15px; 
     }
 
-    h2 { font-weight: 800; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    h6 { color: rgba(255, 255, 255, 0.8) !important; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; font-size: 0.75rem; margin-bottom: 10px; }
-    .energy-value { font-size: 4.2rem; font-weight: 800; letter-spacing: -2px; line-height: 1; margin: 5px 0; }
-    .badge-modern { background: rgba(255, 255, 255, 0.3); padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.4); display: inline-block; }
+    /* Angka Utama (Warna Gelap sesuai Foto 1) */
+    .energy-value { 
+        font-size: 5rem; 
+        font-weight: 800; 
+        letter-spacing: -3px; 
+        line-height: 1; 
+        margin: 10px 0; 
+        color: #1a1a1a; /* Angka warna gelap agar kontras */
+    }
+
+    /* Kapsul Unit (Pill shape di bawah angka) */
+    .unit-pill {
+        background: rgba(255, 255, 255, 0.4);
+        padding: 6px 25px;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #333;
+        display: inline-block;
+        margin-top: 10px;
+        min-width: 120px;
+    }
+
+    /* Progress Bar (Untuk Card Status) */
+    .progress-custom {
+        height: 10px; 
+        background: rgba(255,255,255,0.3); 
+        border-radius: 10px;
+        margin: 20px auto 10px;
+        width: 80%;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: #ffffff;
+        box-shadow: 0 0 15px #ffffff;
+        border-radius: 10px;
+    }
+
+    .badge-top-right { 
+        background: rgba(255, 255, 255, 0.3); 
+        padding: 6px 16px; 
+        border-radius: 100px; 
+        font-size: 0.8rem; 
+        font-weight: 600; 
+        border: 1px solid rgba(255, 255, 255, 0.4); 
+    }
 
     .pulse-white {
         height: 10px; width: 10px; background-color: #ffffff; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #ffffff; animation: pulse 2s infinite;
     }
 
     @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
-    .chart-container { position: relative; height: 400px; }
+    
+    .chart-container { position: relative; height: 450px; }
 </style>
 
-<!-- BACKGROUND OVERLAY -->
 <div class="bg-overlay"></div>
 
 <div class="container mt-5 pb-5">
     <div class="d-flex justify-content-between align-items-end mb-5">
         <div>
-            <h2 class="m-0">Piezo Dashboard</h2>
+            <h2 style="font-weight: 800; letter-spacing: -1px;">Piezo Dashboard</h2>
             <p class="m-0" style="color: rgba(255,255,255,0.8);">Next-Gen Energy Monitoring</p>
         </div>
-        <div class="badge-modern">
+        <div class="badge-top-right">
             <span class="pulse-white"></span> SYSTEM ACTIVE
         </div>
     </div>
@@ -75,7 +124,7 @@
     <div class="row">
         <!-- Kolom Grafik Utama -->
         <div class="col-md-8">
-            <div class="card h-100">
+            <div class="card h-100" style="text-align: left;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h6>Voltage Waveform Analytics</h6>
                     <span style="font-size: 11px; font-weight: 600; opacity: 0.7;">UNIT: VOLTS (V)</span>
@@ -86,25 +135,28 @@
             </div>
         </div>
 
-        <!-- Kolom Ringkasan -->
+        <!-- Kolom Ringkasan (Mengikuti Foto 1) -->
         <div class="col-md-4">
-            <div class="card text-center">
+            <!-- Card Energi -->
+            <div class="card">
                 <h6>Total Energi</h6>
-                <div class="energy-value" id="disp-energy">171</div>
-                <div class="badge-modern">Watt (W)</div>
+                <div class="energy-value" id="disp-energy">0</div>
+                <div class="unit-pill">Watt (W)</div>
             </div>
 
-            <div class="card text-center">
-                <h6>Jumlah Tekanan</h6>
-                <div class="energy-value" id="disp-steps">339</div>
-                <div class="badge-modern">PSI</div>
+            <!-- Card LDR -->
+            <div class="card">
+                <h6>LDR</h6>
+                <div class="energy-value" id="disp-ldr">0</div>
+                <div class="unit-pill">Light</div>
             </div>
 
-            <div class="card text-center mb-0">
-                <h6>System Efficiency</h6>
-                <h3 style="font-weight: 800; font-size: 2rem; margin: 10px 0;">94.8%</h3>
-                <div class="progress" style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px;">
-                    <div class="progress-bar" style="width: 94%; background: #ffffff; box-shadow: 0 0 10px #ffffff;"></div>
+            <!-- Card Status -->
+            <div class="card">
+                <h6>Status</h6>
+                <div class="energy-value" id="disp-status" style="font-size: 3rem;">-</div>
+                <div class="progress-custom">
+                    <div class="progress-bar-fill" style="width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -117,7 +169,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.getElementById('mainChart').getContext('2d');
         let chartFill = ctx.createLinearGradient(0, 0, 0, 400);
-        chartFill.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
+        chartFill.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
         chartFill.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
         const myChart = new Chart(ctx, {
@@ -125,9 +177,9 @@
             data: {
                 labels: Array(20).fill(""),
                 datasets: [{
-                    data: Array(20).fill(50),
+                    data: Array(20).fill(0),
                     borderColor: "#ffffff",
-                    borderWidth: 4,
+                    borderWidth: 5,
                     pointRadius: 0,
                     fill: true,
                     backgroundColor: chartFill,
@@ -141,31 +193,31 @@
                     y: {
                         beginAtZero: true,
                         max: 100,
-                        grid: { color: 'rgba(255, 255, 255, 0.1)', drawBorder: false },
-                        ticks: { color: '#ffffff', font: { family: 'Plus Jakarta Sans', size: 12, weight: '600' } }
+                        grid: { color: 'rgba(255, 255, 255, 0.2)', drawBorder: false },
+                        ticks: { color: '#ffffff', font: { family: 'Plus Jakarta Sans', size: 14, weight: '600' } }
                     },
                     x: { display: false }
                 }
             }
         });
 
+        // Loop penarikan data
         setInterval(() => {
-    fetch('/api/latest-sensor')
-        .then(response => response.json())
-        .then(data => {
-            if (data && !data.error) {
-                // 1. Update Angka Utama (Gunakan ID yang ada di HTML kamu)
-                document.getElementById('disp-energy').innerText = data.energi;
-                document.getElementById('disp-steps').innerText = data.tekanan;
-
-                // 2. Update Grafik Tegangan (Waveform)
-                myChart.data.datasets[0].data.push(data.tegangan);
-                myChart.data.datasets[0].data.shift();
-                myChart.update('none'); // Update tanpa animasi agar smooth
-            }
-        })
-        .catch(error => console.error('Gagal mengambil data:', error));
-        }, 2000); // Cek database setiap 2 detik
+            fetch('/api/latest-sensor')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        document.getElementById('disp-energy').innerText = data.energi;
+                        document.getElementById('disp-ldr').innerText = data.tekanan; // Sesuaikan key jika LDR memakai field 'tekanan'
+                        document.getElementById('disp-status').innerText = data.kondisi;
+                        
+                        myChart.data.datasets[0].data.push(data.tegangan);
+                        myChart.data.datasets[0].data.shift();
+                        myChart.update('none');
+                    }
+                })
+                .catch(error => console.error('Gagal:', error));
+        }, 2000);
     });
 </script>
 @endsection

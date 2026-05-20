@@ -202,7 +202,7 @@
                     let row = `<tr>
                         <td style="opacity: 0.5">#${data.id}</td>
                         <td style="font-weight: 800">${data.tegangan} V</td>
-                        <td>${data.tekanan} psi</td>
+                        <td>${data.LDR} psi</td>
                         <td style="font-weight: 800">${data.energi} W</td>
                         <td style="opacity: 0.7; font-size: 0.7rem;">${time}</td>
                     </tr>`;

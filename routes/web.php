@@ -7,6 +7,7 @@ use App\Models\Sensor;
 use App\Models\Device;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\FirebaseController;
 
 
 
@@ -41,17 +42,23 @@ Route::group([], function () {
         return Session::has('admin') ? redirect('/dashboard') : redirect('/login');
     });
 
-    Route::get('/dashboard', function () {
-        if (!Session::has('admin')) return redirect('/login');
-        return view('dashboard');
-    });
-
+    Route::get('/dashboard', [FirebaseController::class, 'index']);
     Route::get('/api/latest-sensor', function () {
         if (!Session::has('admin')) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        $data = Sensor::latest()->first();
-        return response()->json($data);
+    
+        $database = app('firebase.database');
+        $data = $database->getReference('sensor')->getValue();
+    
+        return response()->json([
+            'energi'   => $data['piezo'] ?? 0,
+            'tekanan'  => $data['ldr'] ?? 0,
+            'tegangan' => $data['tegangan'] ?? 0,
+            'arus'     => $data['arus'] ?? 0,
+            'battery'  => $data['battery'] ?? 0,
+            'kondisi'  => $data['kondisi'] ?? '-',
+        ]);
     });
 
     Route::get('/live-data', function () {

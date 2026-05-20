@@ -1,0 +1,10 @@
+{
+    "sensor": {
+      "piezo": 1350,
+      "ldr": 2450,
+      "kondisi": "Gelap",
+      "arus": 1.25,
+      "tegangan": 3.87,
+      "battery": 82
+    }
+  }
