@@ -205,8 +205,17 @@
                 // ==========================================
 
                 const tegangan = parseFloat(data.tegangan || 0);
-                const ldr = parseInt(data.ldr || 0);          // huruf kecil
-                const energi = parseFloat(data.battery || 0); // gunakan field battery
+
+                // LDR disamakan dengan kode dashboard:
+                // jika field 'tekanan' ada gunakan itu,
+                // jika tidak ada gunakan field 'ldr'
+                const ldr = parseInt(data.tekanan ?? data.ldr ?? 0);
+
+                // Energi disamakan dengan dashboard:
+                // prioritas data.energi, jika tidak ada gunakan data.battery
+                const energi = parseFloat(data.energi ?? data.battery ?? 0);
+
+                // Status
                 const kondisi = data.kondisi || '-';
 
                 // ==========================================
@@ -215,11 +224,8 @@
 
                 const tableBody = document.getElementById("liveSensor");
                 const time = new Date().toLocaleTimeString();
-
-                // ID tidak ada di Firebase, gunakan ID statis
                 const deviceId = "BT-X1";
 
-                // Selalu tampilkan 1 baris data terbaru
                 tableBody.innerHTML = `
                     <tr>
                         <td style="opacity: 0.5">#${deviceId}</td>
@@ -232,24 +238,21 @@
 
                 // ==========================================
                 // UPDATE TABEL BATERAI
-                // Gunakan nilai battery langsung dari Firebase
+                // Gunakan nilai energi/battery langsung dari Firebase
                 // ==========================================
 
-                // Karena battery di Firebase sudah berisi 0-100,
-                // gunakan langsung sebagai persentase
                 const batteryPersen = Math.min(
                     100,
                     Math.max(0, energi)
                 ).toFixed(0);
 
-                // Status baterai
                 let batteryStatus = 'STANDBY';
 
                 if (energi > 0) {
                     batteryStatus = 'CHARGING';
                 }
 
-                if (batteryPersen >= 100) {
+                if (Number(batteryPersen) >= 100) {
                     batteryStatus = 'FULL';
                 }
 
