@@ -190,68 +190,52 @@
 </div>
 
 <script>
+
 function updateLiveLogs() {
+
     fetch('/api/latest-sensor')
+
         .then(response => response.json())
+
         .then(data => {
-            console.log('Data Firebase:', data); // Debug di Console Browser
+
+            console.log('Firebase Data:', data);
 
             if (data && !data.error) {
 
-                // ==========================================
-                // AMBIL DATA DARI FIREBASE
-                // Firebase:
-                // arus, battery, kondisi, ldr, piezo, tegangan
-                // ==========================================
+                // ============================
+                // AMBIL DATA FIREBASE
+                // ============================
 
                 // Tegangan
                 const tegangan = parseFloat(data.tegangan || 0);
 
-                 // Arus (Ampere)  <-- LETAKKAN DI SINI
-                 const arus = parseFloat(data.arus || 0);
+                // Arus
+                const arus = parseFloat(data.arus || 0);
 
                 // LDR
-                // Prioritas field 'tekanan', jika tidak ada gunakan 'ldr'
                 const ldr = parseInt(data.tekanan ?? data.ldr ?? 0);
 
-                // Battery / Energi
-                // Gunakan field 'battery' dari Firebase
-                const energi = parseFloat(data.battery || 0);
+                // Energi Piezo
+                const energi = parseFloat(data.piezo || 0);
 
-                // Status kondisi (Terang / Gelap)
-                const kondisi = data.kondisi || '-';
-
-                // ==========================================
-                // UPDATE TABEL LIVE DATA
-                // ==========================================
-
-                const tableBody = document.getElementById("liveSensor");
-                const time = new Date().toLocaleTimeString();
-                const deviceId = "BT-X1";
-
-                tableBody.innerHTML = `
-                    <tr>
-                        <td style="opacity: 0.5">#${deviceId}</td>
-                        <td style="font-weight: 800">${tegangan.toFixed(3)} V</td>
-                        <td>${ldr}</td>
-                        <td style="font-weight: 800">${energi.toFixed(0)} W</td>
-                        <td style="opacity: 0.7; font-size: 0.7rem;">${time}</td>
-                    </tr>
-                `;
-
-                // ==========================================
-                // HITUNG PERSENTASE BATERAI
-                // Nilai battery di Firebase diasumsikan 0-100
-                // ==========================================
-
-                const batteryPersen = Math.min(
-                    100,
-                    Math.max(0, energi)
+                // Battery %
+                const batteryPersen = parseFloat(
+                    data.battery_percent || 0
                 ).toFixed(0);
 
-                // ==========================================
-                // TENTUKAN STATUS BATERAI
-                // ==========================================
+                // Kondisi
+                const kondisi = data.kondisi || '-';
+
+                // Waktu
+                const time = new Date().toLocaleTimeString();
+
+                // Device ID
+                const deviceId = "BT-X1";
+
+                // ============================
+                // STATUS BATERAI
+                // ============================
 
                 let batteryStatus = 'STANDBY';
 
@@ -263,43 +247,92 @@ function updateLiveLogs() {
                     batteryStatus = 'FULL';
                 }
 
-                // Jika kondisi gelap, bisa ditampilkan sebagai ACTIVE
-                if (kondisi === 'Gelap' && Number(batteryPersen) > 0) {
+                if (kondisi === 'Gelap' &&
+                    Number(batteryPersen) > 0) {
+
                     batteryStatus = 'ACTIVE';
                 }
 
-                // ==========================================
-                // UPDATE TABEL BATERAI
-                // ==========================================
+                // ============================
+                // UPDATE LIVE TABLE
+                // ============================
+
+                document.getElementById("liveSensor").innerHTML = `
+                    <tr>
+
+                        <td style="opacity: 0.5">
+                            #${deviceId}
+                        </td>
+
+                        <td style="font-weight: 800">
+                            ${tegangan.toFixed(3)} V
+                        </td>
+
+                        <td>
+                            ${ldr}
+                        </td>
+
+                        <td style="font-weight: 800">
+                            ${energi.toFixed(0)} W
+                        </td>
+
+                        <td style="opacity: 0.7; font-size: 0.7rem;">
+                            ${time}
+                        </td>
+
+                    </tr>
+                `;
+
+                // ============================
+                // UPDATE BATTERY TABLE
+                // ============================
 
                 document.getElementById("batteryTable").innerHTML = `
                     <tr>
-                        <td style="opacity: 0.5">BT-X1</td>
+
+                        <td style="opacity: 0.5">
+                            ${deviceId}
+                        </td>
+
                         <td>
                             <div class="battery-container">
+
                                 <div class="battery-fill"
                                      style="width: ${batteryPersen}%">
                                 </div>
+
                             </div>
                         </td>
-                        <td style="font-weight: 800">${batteryPersen}%</td>
-                        <td style="font-weight: 800">${arus.toFixed(2)} mA</td>
-                        <td>
-                            <span class="status-badge">${batteryStatus}</span>
+
+                        <td style="font-weight: 800">
+                            ${batteryPersen}%
                         </td>
+
+                        <td style="font-weight: 800">
+                            ${arus.toFixed(2)} mA
+                        </td>
+
+                        <td>
+                            <span class="status-badge">
+                                ${batteryStatus}
+                            </span>
+                        </td>
+
                     </tr>
                 `;
             }
         })
+
         .catch(error => {
-            console.error('Gagal memuat data:', error);
+            console.error('Gagal mengambil data:', error);
         });
 }
 
-// Jalankan setiap 2 detik
+// Refresh setiap 2 detik
 setInterval(updateLiveLogs, 2000);
 
-// Jalankan saat halaman pertama kali dibuka
+// Pertama kali load
 updateLiveLogs();
+
 </script>
 @endsection
