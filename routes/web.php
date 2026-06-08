@@ -56,7 +56,7 @@ Route::group([], function () {
             'tekanan'  => $data['ldr'] ?? 0,
             'tegangan' => $data['tegangan'] ?? 0,
             'arus'     => $data['arus'] ?? 0,
-            'battery'  => $data['battery'] ?? 0,
+            'battery_percent' => $data['battery_percent'] ?? 0,
             'kondisi'  => $data['kondisi'] ?? '-',
         ]);
     });
